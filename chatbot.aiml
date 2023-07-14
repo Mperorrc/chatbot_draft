@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>greeting</pattern>
+    <template>
+      <random>
+        <li>Hi there!</li>
+        <li>Hello, how can I help you?</li>
+        <li>Greetings!</li>
+        <li>Hi <star/>, nice to meet you!</li>
+      </random>
+    </template>
+  </category>
+  <category>
+    <pattern>greeting *</pattern>
+    <template>
+      <random>
+        <li>Hi there <star/>!</li>
+        <li>Hello <star/>, how can I help you?</li>
+        <li>Greetings <star/>!</li>
+      </random>
+    </template>
+  </category>
+  <category>
+  <pattern>HELLO I AM *</pattern>
+  <template>Hello <star/></template>
+  </category>
+  <category>
+  <pattern>HI MY NAME IS *</pattern>
+  <template>Hi <star/>, how are you?</template>
+  </category>
+
+  <category>
+    <pattern>WHAT'S THE WEATHER IN *</pattern>
+      <template>Let me check the weather for you.</template>
+  </category>
+  <category>
+      <pattern>WEATHER IN *</pattern>
+      <template><think><set name="city"><star/></set></think><learn>Python call: get_weather("<get name="city"/>")</learn>The weather in <get name="city"/> is <get name="conditions"/> with a temperature of <get name="temp"/>°C and humidity of <get name="humidity"/>%.</template>
+  </category>
+</aiml>

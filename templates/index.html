@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatbot Interface</title>
+  <style>
+    /* Add styles for the chatbot interface */
+    body {
+      background-image: url("https://images.collegedunia.com/public/image/unnamed_0310141d53c686a54613f78055a03deb.jpeg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .chatbot-container {
+      width: 400px;
+      height: 500px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 50px auto;
+      overflow-y: scroll;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+    }
+    .chat-message {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+    .user-message {
+      background-color: #e6eaf2;
+      color: #333;
+      text-align: right;
+    }
+    .chatbot-message {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+    .input-container {
+      margin-top: 10px;
+      text-align: center;
+    }
+    #user-input {
+      width: 250px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    #submit-btn {
+      margin-left: 10px;
+      padding: 8px 12px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbot-container" id="chat-container">
+    <div class="chat-message chatbot-message">Welcome! How can I assist you today?</div>
+  </div>
+  <div class="input-container">
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button id="submit-btn">Send</button>
+  </div>
+  <script>
+    var chatContainer = document.getElementById('chat-container');
+    var userInput = document.getElementById('user-input');
+    var submitBtn = document.getElementById('submit-btn');
+
+    function addChatMessage(message, isUser) {
+      var chatMessage = document.createElement('div');
+      chatMessage.className = 'chat-message ' + (isUser ? 'user-message' : 'chatbot-message');
+      chatMessage.innerText = message;
+      chatContainer.appendChild(chatMessage);
+    }
+
+    function sendMessage() {
+      var message = userInput.value.trim();
+      if (message !== '') {
+        addChatMessage(message, true);
+        userInput.value = '';
+
+        fetch('/chatbot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: 'message=' + encodeURIComponent(message)
+        })
+        .then(function(response) {
+          return response.text();
+        })
+        .then(function(data) {
+          addChatMessage(data, false);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+      }
+    }
+
+    submitBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
