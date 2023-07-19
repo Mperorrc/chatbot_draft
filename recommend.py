@@ -106,7 +106,6 @@ pyDatalog.create_terms('X,outlet,Mess1,Mess2,acads,serves_veg,serves_non_veg,Bev
 +Mess2('ANC-2')
 
 #Timings 
-
 +evening('Bitsian Pleasant') 
 +afternoon('Agra Chat')
 +evening('Agra Chat')
@@ -190,24 +189,18 @@ pyDatalog.create_terms('X,outlet,Mess1,Mess2,acads,serves_veg,serves_non_veg,Bev
 +sit_down('ANC-2')
 +takeaway('ANC-2')
 
-def recommend_outlet(food_style,location,budget,food_type,outlet_type):
+def recommend_outlet(food_style,location,budget,food_type,outlet_type,check):
     results = outlet(X)
-    food_style = input("What do you wish to have (Beverage,Meals,Maggi,fast-food,sandwich) ?")
-
     current_hour = datetime.datetime.now().hour
-    
-    print(current_hour)
 
     if (current_hour >=2 and current_hour < 11):
-        print("Sorry, No restaurants are open currently")
-        return
+        return "Sorry, No restaurants are open currently"
     elif (current_hour>=2 and current_hour<17):
         results = results & afternoon(X)
     elif (current_hour>=17 and current_hour<23):
         results = results & evening(X)
     else:
         results = results & night(X)
-
 
     if food_style == 'Beverage':
         results = results & Beverages(X)
@@ -220,33 +213,29 @@ def recommend_outlet(food_style,location,budget,food_type,outlet_type):
     elif food_style == 'sandwich' :
         results = results & sandwich(X)
     else:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
     
     if len(results)==0:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
-    
-    budget = input("What is your preferred average cost of a meal (cheap, expensive)? ")
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
     if budget == 'cheap':
         results = results & cheap(X)
     elif budget == 'expensive' :
         results = results & expensive(X)
     else:
-        print("No such outlets Found")
-        return
+        return "No such outlets Found"
     
     if len(results)==0:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
-
-    check = input("Do you want us to recommend multiple outlets or just one (multiple,one)?")
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
     if (check=="multiple" and food_style == "Beverage"):
-        print(f"I recommend Restaurant {results[0][0]}")
-        return    
+        recommendations = f"I recommend Restaurant(s) :"
+        for i in range(len(results)):
+            recommendations += f" {i+1}. {results[i][0]}, "
+        return recommendations   
     
     if check=='one':
-        location = input("Where are you currently? - near (Mess-1, near Mess-2, academic-blocks)")
         if location == 'Mess-1':
             results = results & Mess1(X)
         elif location == 'Mess-2' :
@@ -254,44 +243,40 @@ def recommend_outlet(food_style,location,budget,food_type,outlet_type):
         elif location == 'academic-blocks':
             results = results & acads(X)
         else:
-            print("Sorry, I couldn't find a restaurant matching your preferences.")
-            return  
+            return "Sorry, I couldn't find a restaurant matching your preferences."
+             
 
     if len(results)==0:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
+        return "Sorry, I couldn't find a restaurant matching your preferences."
 
-    food_type = input("What kind of food do you prefer (Vegetarian, Non-Vegetarian) ")
     if food_type == "Vegetarian":
         results = results & serves_veg(X)
     elif food_type == "Non-Vegetarian" :
         results = results & serves_non_veg(X)
     else:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
 
     if len(results)==0:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
-
-    outlet_type = input("What do you wish to do (takeaway or sit-down)")
-
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
     if outlet_type == "sit-down":
         results = results & sit_down(X)
     elif outlet_type == "takeaway" :
         results = results & takeaway(X)
     else:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
 
     if len(results)==0:
-        print("Sorry, I couldn't find a restaurant matching your preferences.")
-        return
+        return "Sorry, I couldn't find a restaurant matching your preferences."
+        
 
     if check=='multiple':
-        print(f"I recommend Restaurant(s)")
+        recommendations = f"I recommend Restaurant(s) :"
         for i in range(len(results)):
-            print(f"{i+1}. {results[i][0]}")
-    else:
-        print(f"I recommend Restaurant {results[0][0]}")
+            recommendations += f" {i+1}. {results[i][0]}, "
+        return recommendations
+    
+    return f"I recommend Restaurant {results[0][0]}"
 

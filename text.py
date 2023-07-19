@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import nltk
 import re
 from nltk.corpus import stopwords
@@ -45,6 +44,7 @@ classifier.fit(X_train, y_train)
 
 def give_intent(words):
     words = preprocess_text(words)
+    print(words)
     input_msg = ' '.join([word for word in words.split() if word in unique_words])
     if len(input_msg)==0:
         return "NULL"
